@@ -1,21 +1,23 @@
 package com.booking.bookingservice.service;
 
 import com.booking.bookingservice.model.Movie;
-import com.booking.bookingservice.model.Showtime;
 import com.booking.bookingservice.repository.MovieRepository;
+import com.booking.bookingservice.repository.ShowtimeRepository;
 import jakarta.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MovieService {
 
   private final MovieRepository movieRepository;
+  private final ShowtimeRepository showtimeRepository;
 
-  public MovieService(MovieRepository movieRepository) {
+  public MovieService(MovieRepository movieRepository, ShowtimeRepository showtimeRepository) {
     this.movieRepository = movieRepository;
+    this.showtimeRepository = showtimeRepository;
   }
+
 
   public List<Movie> getAllMovies() {
     return movieRepository.findAll();
@@ -26,14 +28,23 @@ public class MovieService {
   }
 
   public Movie saveMovie(Movie movie) {
+    if (movieRepository.findByTitle(movie.getTitle()).isPresent()) {
+      throw new RuntimeException("Movie is already exists");
+    }
     movie.getShowtimes().forEach(showtime -> showtime.setMovie(movie));
     return movieRepository.save(movie);
   }
 
   public List<Movie> saveMovies(List<Movie> movies) {
-    movies.forEach(movie -> movie.getShowtimes().forEach(showtime -> showtime.setMovie(movie)));
+    movies.forEach(movie -> {
+      if (movieRepository.findByTitle(movie.getTitle()).isPresent()) {
+        throw new RuntimeException("One or more movies already exist");
+      }
+      movie.getShowtimes().forEach(showtime -> showtime.setMovie(movie));
+    });
     return movieRepository.saveAll(movies);
   }
+
 
   @Transactional
   public List<Movie> updateMovies(List<Movie> movies) {
@@ -54,7 +65,11 @@ public class MovieService {
 
 
   public void deleteMovie(Long id) {
+    Movie movie = movieRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Movie not found"));
+    if (!showtimeRepository.findByMovie(movie).isEmpty()) {
+      throw new RuntimeException("Cannot delete movie with active showtimes");
+    }
     movieRepository.deleteById(id);
   }
-
 }

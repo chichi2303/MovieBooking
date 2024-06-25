@@ -1,7 +1,10 @@
 package com.booking.bookingservice.controller;
 
+import com.booking.bookingservice.dto.ShowtimeRequest;
 import com.booking.bookingservice.model.Showtime;
 import com.booking.bookingservice.service.ShowtimeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -16,22 +19,28 @@ public class ShowtimeController {
   }
 
   @GetMapping
-  public List<Showtime> getAllShowtimes() {
-    return showtimeService.getAllShowtimes();
+  public ResponseEntity<List<Showtime>> getAllShowtimes() {
+    List<Showtime> showtimes = showtimeService.getAllShowtimes();
+    return new ResponseEntity<>(showtimes, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public Showtime getShowtimeById(@PathVariable Long id) {
-    return showtimeService.getShowtimebyId(id);
+  public ResponseEntity<Showtime> getShowtimeById(@PathVariable Long id) {
+    Showtime showtime = showtimeService.getShowtimebyId(id);
+    return new ResponseEntity<>(showtime, HttpStatus.OK);
   }
 
   @PostMapping
-  public Showtime createShowtime(@RequestBody Showtime showtime) {
-    return showtimeService.saveShowtime(showtime);
+  public ResponseEntity<Showtime> addShowtime(@RequestBody ShowtimeRequest request) {
+    Showtime showtime = showtimeService.addShowtime(
+        request.getMovieID(), request.getAuditoriumId(), request.getTime(),
+        request.getAvaliableSeats());
+    return new ResponseEntity<>(showtime, HttpStatus.CREATED);
   }
 
   @DeleteMapping("/{id}")
-  public void deleteShowtime(@PathVariable Long id) {
+  public ResponseEntity<Void> deleteShowtime(@PathVariable Long id) {
     showtimeService.deleteShowtime(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

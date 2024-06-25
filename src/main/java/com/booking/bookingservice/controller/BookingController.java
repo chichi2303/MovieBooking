@@ -1,8 +1,10 @@
 package com.booking.bookingservice.controller;
 
+import com.booking.bookingservice.dto.BookingRequest;
 import com.booking.bookingservice.model.Booking;
 import com.booking.bookingservice.service.BookingService;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,9 @@ public class BookingController {
   }
 
   @GetMapping
-  public List<Booking> getAllBookings() {
-    return bookingService.getAllBookings();
+  public ResponseEntity<List<Booking>> getAllBookings() {
+    List<Booking> allBookings = bookingService.getAllBookings();
+    return new ResponseEntity<>(allBookings, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
@@ -30,13 +33,15 @@ public class BookingController {
   }
 
   @PostMapping
-  public Booking createBooking(@RequestBody Booking booking) {
-    return bookingService.saveBooking(booking);
+  public ResponseEntity<Booking> bookShowtime(@RequestBody BookingRequest request) {
+    Booking booking = bookingService.bookShowtime(request.getCustomerName(),
+        request.getShowtimeID(), request.getNumberofTickets());
+    return new ResponseEntity<>(booking, HttpStatus.CREATED);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
     bookingService.deleteBooking(id);
-    return ResponseEntity.noContent().build();
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

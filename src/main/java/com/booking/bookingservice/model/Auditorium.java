@@ -3,21 +3,20 @@ package com.booking.bookingservice.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Builder
+@Entity
 @Getter
 @Setter
-@Entity
-@AllArgsConstructor
 @NoArgsConstructor
-public class Booking {
+public class Auditorium {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private String customerName;
-  private int numberOfTickets;
+  private String roomNumber;
+  private Integer capacity;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "showtime_id")
+  @OneToOne(mappedBy = "auditorium", cascade = CascadeType.ALL, orphanRemoval = true)
   private Showtime showtime;
+
 }
+
