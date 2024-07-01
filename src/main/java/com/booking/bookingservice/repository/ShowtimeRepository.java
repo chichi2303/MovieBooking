@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
+  // TODO: find by id instead of find by object
   List<Showtime> findByMovie(Movie movie);
 
   @Query(value = "SELECT COUNT(*)>0 FROM showtime s WHERE s.movie_id = :movieID AND s"

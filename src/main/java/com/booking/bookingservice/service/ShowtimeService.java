@@ -17,6 +17,7 @@ public class ShowtimeService {
   private final MovieRepository movieRepository;
   private final AuditoriumRepository auditoriumRepository;
 
+  // TODO: using lombok @RequireArgsConstructor
   public ShowtimeService(ShowtimeRepository showtimeRepository, MovieRepository movieRepository,
       AuditoriumRepository auditoriumRepository) {
     this.showtimeRepository = showtimeRepository;

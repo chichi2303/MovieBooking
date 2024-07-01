@@ -65,6 +65,7 @@ public class MovieService {
 
 
   public void deleteMovie(Long id) {
+    // TODO: optimize that query
     Movie movie = movieRepository.findById(id)
         .orElseThrow(() -> new RuntimeException("Movie not found"));
     if (!showtimeRepository.findByMovie(movie).isEmpty()) {

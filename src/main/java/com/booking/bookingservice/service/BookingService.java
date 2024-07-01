@@ -35,6 +35,7 @@ public class BookingService {
     if (showtime.getAvailableSeats() < numberOfSeats) {
       throw new RuntimeException("Not enough seats available");
     }
+    // TODO: do we need to update showtime in database after setAvailableSeats?
     showtime.setAvailableSeats(showtime.getAvailableSeats() - numberOfSeats);
     Booking booking = Booking.builder()
         .customerName(personName)

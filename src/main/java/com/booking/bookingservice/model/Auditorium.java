@@ -15,8 +15,10 @@ public class Auditorium {
   private String roomNumber;
   private Integer capacity;
 
+  // TODO: add FK with updatable/insertable
+  private long showtimeId;
+
   @OneToOne(mappedBy = "auditorium", cascade = CascadeType.ALL, orphanRemoval = true)
   private Showtime showtime;
 
 }
-

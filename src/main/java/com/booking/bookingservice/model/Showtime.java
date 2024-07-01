@@ -19,6 +19,9 @@ public class Showtime {
   private LocalDateTime startTime;
   private int availableSeats;
 
+  @Column(insertable = false, updatable = false)
+  private long movieId;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "movie_id")
   private Movie movie;

@@ -1,6 +1,7 @@
 package com.booking.bookingservice.controller;
 
 import com.booking.bookingservice.dto.BookingRequest;
+import com.booking.bookingservice.dto.response.BookingDetail;
 import com.booking.bookingservice.model.Booking;
 import com.booking.bookingservice.service.BookingService;
 import java.util.List;
@@ -20,8 +21,8 @@ public class BookingController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Booking>> getAllBookings() {
-    List<Booking> allBookings = bookingService.getAllBookings();
+  public ResponseEntity<List<BookingDetail>> getAllBookings() {
+    List<BookingDetail> allBookings = bookingService.getAllBookings();
     return new ResponseEntity<>(allBookings, HttpStatus.OK);
   }
 

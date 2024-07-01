@@ -7,6 +7,7 @@ import lombok.*;
 @Setter
 public class ShowtimeRequest {
 
+  // TODO: convert from object to primitive type
   private Long movieID;
   private Long auditoriumId;
   private LocalDateTime time;
