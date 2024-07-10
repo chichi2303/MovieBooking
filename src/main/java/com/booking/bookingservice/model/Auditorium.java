@@ -11,11 +11,11 @@ public class Auditorium {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private long id;
   private String roomNumber;
-  private Integer capacity;
+  private int capacity;
 
-  // TODO: add FK with updatable/insertable
+  @Column(name = "showtime_id", insertable = false, updatable = false)
   private long showtimeId;
 
   @OneToOne(mappedBy = "auditorium", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -8,22 +8,16 @@ import com.booking.bookingservice.repository.MovieRepository;
 import com.booking.bookingservice.repository.ShowtimeRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ShowtimeService {
 
   private final ShowtimeRepository showtimeRepository;
   private final MovieRepository movieRepository;
   private final AuditoriumRepository auditoriumRepository;
-
-  // TODO: using lombok @RequireArgsConstructor
-  public ShowtimeService(ShowtimeRepository showtimeRepository, MovieRepository movieRepository,
-      AuditoriumRepository auditoriumRepository) {
-    this.showtimeRepository = showtimeRepository;
-    this.movieRepository = movieRepository;
-    this.auditoriumRepository = auditoriumRepository;
-  }
 
   public List<Showtime> getAllShowtimes() {
     return showtimeRepository.findAll();

@@ -1,11 +1,14 @@
 package com.booking.bookingservice.service;
 
+import com.booking.bookingservice.dto.response.BookingDetail;
+import com.booking.bookingservice.mapper.BookingMapper;
 import com.booking.bookingservice.model.Booking;
 import com.booking.bookingservice.model.Showtime;
 import com.booking.bookingservice.repository.BookingRepository;
 import com.booking.bookingservice.repository.ShowtimeRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,28 +24,35 @@ public class BookingService {
   }
 
 
-  public List<Booking> getAllBookings() {
-    return bookingRepository.findAll();
+  public List<BookingDetail> getAllBookings() {
+    List<Booking> bookings = bookingRepository.findAll();
+    return bookings.stream()
+        .map(BookingMapper::mapToBookingDetail)
+        .collect(Collectors.toList());
   }
 
-  public Optional<Booking> getBookingById(Long id) {
-    return bookingRepository.findById(id);
+  public Optional<BookingDetail> getBookingById(Long id) {
+    return bookingRepository.findById(id)
+        .map(BookingMapper::mapToBookingDetail);
   }
 
-  public Booking bookShowtime(String personName, Long showtimeId, int numberOfSeats) {
+  public BookingDetail bookShowtime(String personName, Long showtimeId, int numberOfSeats) {
     Showtime showtime = showtimeRepository.findById(showtimeId)
         .orElseThrow(() -> new RuntimeException("Showtime not found"));
     if (showtime.getAvailableSeats() < numberOfSeats) {
       throw new RuntimeException("Not enough seats available");
     }
-    // TODO: do we need to update showtime in database after setAvailableSeats?
     showtime.setAvailableSeats(showtime.getAvailableSeats() - numberOfSeats);
+    // Save the updated showtime entity to the database
+    showtimeRepository.save(showtime);
+
     Booking booking = Booking.builder()
         .customerName(personName)
         .showtime(showtime)
         .numberOfTickets(numberOfSeats)
         .build();
-    return bookingRepository.save(booking);
+    Booking savedBooking = bookingRepository.save(booking);
+    return BookingMapper.mapToBookingDetail(savedBooking);
   }
 
   public void deleteBooking(Long id) {
@@ -51,6 +61,9 @@ public class BookingService {
 
     Showtime showtime = booking.getShowtime();
     showtime.setAvailableSeats(showtime.getAvailableSeats() + booking.getNumberOfTickets());
+    // Save the updated showtime entity to the database
+    showtimeRepository.save(showtime);
+
     bookingRepository.delete(booking);
   }
 }

@@ -27,17 +27,17 @@ public class BookingController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
+  public ResponseEntity<BookingDetail> getBookingById(@PathVariable Long id) {
     return bookingService.getBookingById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping
-  public ResponseEntity<Booking> bookShowtime(@RequestBody BookingRequest request) {
-    Booking booking = bookingService.bookShowtime(request.getCustomerName(),
+  public ResponseEntity<BookingDetail> bookShowtime(@RequestBody BookingRequest request) {
+    BookingDetail bookingDetail = bookingService.bookShowtime(request.getCustomerName(),
         request.getShowtimeID(), request.getNumberofTickets());
-    return new ResponseEntity<>(booking, HttpStatus.CREATED);
+    return new ResponseEntity<>(bookingDetail, HttpStatus.CREATED);
   }
 
   @DeleteMapping("/{id}")

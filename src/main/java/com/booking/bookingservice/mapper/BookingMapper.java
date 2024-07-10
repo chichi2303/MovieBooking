@@ -5,8 +5,14 @@ import com.booking.bookingservice.model.Booking;
 
 public class BookingMapper {
 
-  // TODO: use mapper to map from entity to dto
   public static BookingDetail mapToBookingDetail(Booking booking) {
-    return null;
+    return BookingDetail.builder()
+        .id(booking.getId())
+        .personName(booking.getCustomerName())
+        .showtimeId(booking.getShowtime().getId())
+        .movieTitle(booking.getShowtime().getMovie().getTitle())
+        .auditoriumId(booking.getShowtime().getAuditorium().getId())
+        .numberOfSeats(booking.getNumberOfTickets())
+        .build();
   }
 }

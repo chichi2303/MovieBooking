@@ -10,10 +10,14 @@ import org.springframework.data.repository.query.Param;
 public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
 
   // TODO: find by id instead of find by object
-  List<Showtime> findByMovie(Movie movie);
+  List<Showtime> findByMovie(Long id);
 
-  @Query(value = "SELECT COUNT(*)>0 FROM showtime s WHERE s.movie_id = :movieID AND s"
+  @Query(value = "SELECT COUNT(*)>0 FROM showtime s WHERE s.movie_id = :movieId AND s"
       + ".auditorium_id = :auditoriumId AND s.start_time =:time", nativeQuery = true)
-  boolean existsByMovieIdAndAuditoriumIdAndTime(@Param("movieID") Long movieId, @Param(
+  boolean existsByMovieIdAndAuditoriumIdAndTime(@Param("movieId") Long movieId, @Param(
       "auditoriumID") Long auditoriumID, @Param("time") LocalDateTime time);
+
+
+  @Query(value = "SELECT COUNT(*) > 0 FROM showtime s WHERE s.movie_id = :movieId", nativeQuery = true)
+  boolean existsByMovieId(@Param("movieId") Long movieId);
 }
