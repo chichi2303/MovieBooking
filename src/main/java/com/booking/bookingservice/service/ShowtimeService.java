@@ -30,6 +30,7 @@ public class ShowtimeService {
 
   public Showtime addShowtime(Long movieId, Long auditoriumId, LocalDateTime dateTime,
       int availableSeats) {
+    // TODO: check performance
     Movie movie = movieRepository.findById(movieId)
         .orElseThrow(() -> new RuntimeException("Movie not found"));
 

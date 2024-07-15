@@ -1,5 +1,6 @@
 package com.booking.bookingservice.service;
 
+import com.booking.bookingservice.dto.BookingRequestDetail;
 import com.booking.bookingservice.dto.response.BookingDetail;
 import com.booking.bookingservice.mapper.BookingMapper;
 import com.booking.bookingservice.model.Booking;
@@ -36,20 +37,26 @@ public class BookingService {
         .map(BookingMapper::mapToBookingDetail);
   }
 
-  public BookingDetail bookShowtime(String personName, Long showtimeId, int numberOfSeats) {
-    Showtime showtime = showtimeRepository.findById(showtimeId)
+  public BookingDetail bookShowtime(BookingRequestDetail requestDetail) {
+    // TODO fix performance
+    // check showtime exist. pull all showTime object from database
+    Showtime showtime = showtimeRepository.findById(requestDetail.getShowtimeId())
         .orElseThrow(() -> new RuntimeException("Showtime not found"));
-    if (showtime.getAvailableSeats() < numberOfSeats) {
+    // -> 2 query
+    // check enough seat
+    if (showtime.getAvailableSeats() < requestDetail.getNumberOfTickets()) {
       throw new RuntimeException("Not enough seats available");
     }
-    showtime.setAvailableSeats(showtime.getAvailableSeats() - numberOfSeats);
+    // update seat after booking
+    showtime.setAvailableSeats(showtime.getAvailableSeats() - requestDetail.getNumberOfTickets());
     // Save the updated showtime entity to the database
+    // save all showTime object to database
     showtimeRepository.save(showtime);
 
     Booking booking = Booking.builder()
-        .customerName(personName)
+        .customerName(requestDetail.getCustomerName())
         .showtime(showtime)
-        .numberOfTickets(numberOfSeats)
+        .numberOfTickets(requestDetail.getNumberOfTickets())
         .build();
     Booking savedBooking = bookingRepository.save(booking);
     return BookingMapper.mapToBookingDetail(savedBooking);

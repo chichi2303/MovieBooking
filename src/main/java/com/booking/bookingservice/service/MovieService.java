@@ -5,6 +5,7 @@ import com.booking.bookingservice.repository.MovieRepository;
 import com.booking.bookingservice.repository.ShowtimeRepository;
 import jakarta.transaction.Transactional;
 import java.util.*;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +29,7 @@ public class MovieService {
   }
 
   public Movie saveMovie(Movie movie) {
+    // TODO: don't use entity
     if (movieRepository.findByTitle(movie.getTitle()).isPresent()) {
       throw new RuntimeException("Movie is already exists");
     }
@@ -48,6 +50,8 @@ public class MovieService {
 
   @Transactional
   public List<Movie> updateMovies(List<Movie> movies) {
+    // list movieIds
+    // query get all movies with given ids. map result to Map<Long, Movie> movieId -> movie
     for (Movie movie : movies) {
       Movie existingMovie = movieRepository.findById(movie.getId())
           .orElseThrow(() -> new RuntimeException("Movie not found"));

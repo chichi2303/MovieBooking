@@ -4,9 +4,10 @@ import lombok.*;
 
 @Getter
 @Setter
-public class BookingRequest {
+public class RestApiBookingRequest {
 
   private String customerName;
   private Long showtimeID;
   private int numberofTickets;
+  private String signature;
 }

@@ -17,7 +17,7 @@ public interface ShowtimeRepository extends JpaRepository<Showtime, Long> {
   boolean existsByMovieIdAndAuditoriumIdAndTime(@Param("movieId") Long movieId, @Param(
       "auditoriumID") Long auditoriumID, @Param("time") LocalDateTime time);
 
-
   @Query(value = "SELECT COUNT(*) > 0 FROM showtime s WHERE s.movie_id = :movieId", nativeQuery = true)
   boolean existsByMovieId(@Param("movieId") Long movieId);
+
 }

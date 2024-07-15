@@ -1,10 +1,10 @@
 package com.booking.bookingservice.controller;
 
-import com.booking.bookingservice.dto.BookingRequest;
+import com.booking.bookingservice.dto.RestApiBookingRequest;
 import com.booking.bookingservice.dto.response.BookingDetail;
-import com.booking.bookingservice.model.Booking;
 import com.booking.bookingservice.service.BookingService;
 import java.util.List;
+import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +34,9 @@ public class BookingController {
   }
 
   @PostMapping
-  public ResponseEntity<BookingDetail> bookShowtime(@RequestBody BookingRequest request) {
-    BookingDetail bookingDetail = bookingService.bookShowtime(request.getCustomerName(),
-        request.getShowtimeID(), request.getNumberofTickets());
+  public ResponseEntity<BookingDetail> bookShowtime(@RequestBody RestApiBookingRequest request) {
+    // TODO: map rest request
+    BookingDetail bookingDetail = bookingService.bookShowtime(null);
     return new ResponseEntity<>(bookingDetail, HttpStatus.CREATED);
   }
 

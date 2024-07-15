@@ -19,6 +19,7 @@ public class Showtime {
   private LocalDateTime startTime;
   private int availableSeats;
 
+  // TODO: switch insertable/updatable with movie object
   @Column(insertable = false, updatable = false)
   private long movieId;
 
