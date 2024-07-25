@@ -1,12 +1,12 @@
 package com.booking.bookingservice.service;
 
+import com.booking.bookingservice.dto.ShowtimeRequestDetail;
+import com.booking.bookingservice.dto.response.ShowtimeDetail;
+import com.booking.bookingservice.mapper.ShowtimeMapper;
 import com.booking.bookingservice.model.Auditorium;
 import com.booking.bookingservice.model.Movie;
 import com.booking.bookingservice.model.Showtime;
-import com.booking.bookingservice.repository.AuditoriumRepository;
-import com.booking.bookingservice.repository.MovieRepository;
 import com.booking.bookingservice.repository.ShowtimeRepository;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,36 +16,39 @@ import org.springframework.stereotype.Service;
 public class ShowtimeService {
 
   private final ShowtimeRepository showtimeRepository;
-  private final MovieRepository movieRepository;
-  private final AuditoriumRepository auditoriumRepository;
 
-  public List<Showtime> getAllShowtimes() {
-    return showtimeRepository.findAll();
+  public List<ShowtimeDetail> getAllShowtimes() {
+    List<Showtime> showtimes = showtimeRepository.findAll();
+    return showtimes.stream()
+        .map(ShowtimeMapper::mapToShowtimeDetail)
+        .toList();
   }
 
-  public Showtime getShowtimebyId(Long id) {
+  public ShowtimeDetail getShowtimebyId(Long id) {
     return showtimeRepository.findById(id)
+        .map((ShowtimeMapper::mapToShowtimeDetail))
         .orElseThrow(() -> new RuntimeException("Showtime not found"));
   }
 
-  public Showtime addShowtime(Long movieId, Long auditoriumId, LocalDateTime dateTime,
-      int availableSeats) {
-    // TODO: check performance
-    Movie movie = movieRepository.findById(movieId)
-        .orElseThrow(() -> new RuntimeException("Movie not found"));
+  public Showtime addShowtime(ShowtimeRequestDetail requestDetail) {
+    // TODO: check performance - DONE
 
-    Auditorium auditorium = auditoriumRepository.findById(auditoriumId)
-        .orElseThrow(() -> new RuntimeException("Auditorium not found"));
-
-    if (showtimeRepository.existsByMovieIdAndAuditoriumIdAndTime(movieId, auditoriumId, dateTime)) {
+    if (showtimeRepository.existsByMovieIdAndAuditoriumIdAndTime(requestDetail.getMovieId(),
+        requestDetail.getAuditoriumId(), requestDetail.getTime())) {
       throw new RuntimeException("Showtime already exists for this movie and auditorium.");
     }
+
+    Movie movie = new Movie();
+    movie.setId(requestDetail.getMovieId());
+
+    Auditorium auditorium = new Auditorium();
+    auditorium.setId(requestDetail.getAuditoriumId());
 
     Showtime showtime = Showtime.builder()
         .movie(movie)
         .auditorium(auditorium)
-        .startTime(dateTime)
-        .availableSeats(availableSeats)
+        .startTime(requestDetail.getTime())
+        .availableSeats(requestDetail.getAvailableSeats())
         .build();
 
     return showtimeRepository.save(showtime);

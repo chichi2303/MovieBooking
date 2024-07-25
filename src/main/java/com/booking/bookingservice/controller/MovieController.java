@@ -1,6 +1,7 @@
 package com.booking.bookingservice.controller;
 
-import com.booking.bookingservice.model.Movie;
+import com.booking.bookingservice.dto.MovieRequestDetail;
+import com.booking.bookingservice.dto.response.MovieDetail;
 import com.booking.bookingservice.service.MovieService;
 import java.util.List;
 import java.util.Optional;
@@ -20,33 +21,36 @@ public class MovieController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Movie>> getAllMovies() {
-    List<Movie> movies = movieService.getAllMovies();
-    return new ResponseEntity<>(movies, HttpStatus.OK);
+  public ResponseEntity<List<MovieDetail>> getAllMovies() {
+    List<MovieDetail> allmovies = movieService.getAllMovies();
+    return new ResponseEntity<>(allmovies, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
-    Optional<Movie> movie = movieService.getMovieById(id);
+  public ResponseEntity<MovieDetail> getMovieById(@PathVariable Long id) {
+    Optional<MovieDetail> movie = movieService.getMovieById(id);
     return movie.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
   }
 
   @PostMapping
-  public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) {
-    Movie savedMovie = movieService.saveMovie(movie);
+  public ResponseEntity<MovieDetail> createMovie(
+      @RequestBody MovieRequestDetail movieRequestDetail) {
+    MovieDetail savedMovie = movieService.saveMovie(movieRequestDetail);
     return new ResponseEntity<>(savedMovie, HttpStatus.CREATED);
   }
 
   @PostMapping("/batch")
-  public ResponseEntity<List<Movie>> createMovies(@RequestBody List<Movie> movies) {
-    List<Movie> savedMovies = movieService.saveMovies(movies);
+  public ResponseEntity<List<MovieDetail>> createMovies(
+      @RequestBody List<MovieRequestDetail> movieRequestDetails) {
+    List<MovieDetail> savedMovies = movieService.saveMovies(movieRequestDetails);
     return new ResponseEntity<>(savedMovies, HttpStatus.CREATED);
   }
 
   @PutMapping("/batch")
-  public ResponseEntity<List<Movie>> updateMovies(@RequestBody List<Movie> movies) {
-    List<Movie> updatedMovies = movieService.updateMovies(movies);
+  public ResponseEntity<List<MovieDetail>> updateMovies(
+      @RequestBody List<MovieRequestDetail> movieRequestDetails) {
+    List<MovieDetail> updatedMovies = movieService.updateMovies(movieRequestDetails);
     return new ResponseEntity<>(updatedMovies, HttpStatus.OK);
   }
 

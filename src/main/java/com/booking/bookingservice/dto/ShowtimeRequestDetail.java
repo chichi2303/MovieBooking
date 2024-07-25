@@ -5,11 +5,13 @@ import lombok.*;
 
 @Getter
 @Setter
-public class ShowtimeRequest {
+public class ShowtimeRequestDetail {
 
-  private long movieID;
+  private long movieId;
+  private String movieName;
   private long auditoriumId;
   private LocalDateTime time;
-  private int avaliableSeats;
+  private int availableSeats;
+  private String signature;
 
 }

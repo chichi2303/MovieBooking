@@ -19,12 +19,10 @@ public class Showtime {
   private LocalDateTime startTime;
   private int availableSeats;
 
-  // TODO: switch insertable/updatable with movie object
-  @Column(insertable = false, updatable = false)
-  private long movieId;
+  // TODO: switch insertable/updatable with movie object - DONE
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "movie_id")
+  @JoinColumn(name = "movie_id", insertable = false, updatable = false)
   private Movie movie;
 
   @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL, orphanRemoval = true)
